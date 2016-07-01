@@ -50,9 +50,10 @@ public interface HystrixThreadPoolKey {
         public static HystrixThreadPoolKey asKey(String name) {
             HystrixThreadPoolKey k = intern.get(name);
             if (k == null) {
-                intern.putIfAbsent(name, new HystrixThreadPoolKeyDefault(name));
+                k = new HystrixThreadPoolKeyDefault(name);
+                intern.putIfAbsent(name, k);
             }
-            return intern.get(name);
+            return k;
         }
 
         private static class HystrixThreadPoolKeyDefault implements HystrixThreadPoolKey {
@@ -67,7 +68,11 @@ public interface HystrixThreadPoolKey {
             public String name() {
                 return name;
             }
-
+            
+            @Override
+            public String toString() {
+            	return name;
+            }
         }
 
         /* package-private */ static int getThreadPoolCount() {
